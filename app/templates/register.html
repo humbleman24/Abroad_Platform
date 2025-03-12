@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>注册</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>注册</h1>
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="flash-message">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        <form method="POST">
+            <label>用户名</label>
+            <input type="text" name="username" required>
+            <label>密码</label>
+            <input type="password" name="password" required>
+            <label>角色</label>
+            <select name="role" required>
+                <option value="student">学生</option>
+                <option value="teacher">教师</option>
+            </select>
+            <label>全名</label>
+            <input type="text" name="full_name">
+            <label>邮箱</label>
+            <input type="email" name="email">
+            <label>电话</label>
+            <input type="text" name="phone">
+            <button type="submit">注册</button>
+        </form>
+        <a href="{{ url_for('routes.login') }}">已有账号？登录</a>
+    </div>
+</body>
+</html>

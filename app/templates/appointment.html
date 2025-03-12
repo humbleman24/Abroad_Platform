@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>预约老师</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>预约老师</h1>
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="flash-message">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        
+        <form method="POST">
+            {{ form.hidden_tag() }}
+            <label>选择老师</label>
+            {{ form.teacher }}
+            <label>预约时间</label>
+            {{ form.time_slot }}
+            {{ form.submit }}
+        </form>
+        
+        <h2>我的预约</h2>
+        <ul>
+            {% for appt in appointments %}
+                <li>老师: {{ appt.teacher.username }} | 时间: {{ appt.time_slot }} | 状态: {{ appt.status }}</li>
+            {% endfor %}
+        </ul>
+        
+        <a href="{{ url_for('routes.profile') }}">返回个人资料</a>
+    </div>
+</body>
+</html>

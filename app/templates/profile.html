@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>个人资料</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>欢迎，{{ user.username }}</h1>
+        <p>{{ user.role }}</p>
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="flash-message">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        
+        <h2>个人信息</h2>
+        <form method="POST">
+            <label>全名</label>
+            <input type="text" name="full_name" value="{{ user.full_name or '' }}">
+            <label>邮箱</label>
+            <input type="email" name="email" value="{{ user.email or '' }}">
+            <label>电话</label>
+            <input type="text" name="phone" value="{{ user.phone or '' }}">
+            <button type="submit">更新资料</button>
+        </form>
+        
+        {% if user.is_student() %}
+        <h2>上传文件</h2>
+        <form method="POST" enctype="multipart/form-data">
+            {{ upload_form.hidden_tag() }}
+            <label>文件</label>
+            {{ upload_form.file }}
+            <label>类别</label>
+            {{ upload_form.category }}
+            {{ upload_form.submit }}
+        </form>
+        
+        <h3>已上传文件</h3>
+        <ul>
+            {% for doc in documents %}
+                <li>{{ doc.category }}: {{ doc.filename }}</li>
+            {% endfor %}
+        </ul>
+        <a href="{{ url_for('routes.appointment') }}">预约老师</a>
+        {% endif %}
+        
+        <a href="{{ url_for('routes.logout') }}">退出登录</a>
+    </div>
+</body>
+</html>
