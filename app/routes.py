@@ -7,6 +7,7 @@ from app.models import User, Document, Appointment, db
 from app.forms import UploadForm, AppointmentForm
 from config import Config
 import os
+import uuid
 
 bp = Blueprint('routes', __name__)
 
@@ -63,12 +64,14 @@ def profile():
     if current_user.is_student() and upload_form.validate_on_submit():
         file = upload_form.file.data
         if file and allowed_file(file.filename):
-            filename = secure_filename(file.filename)
-            file_path = os.path.join(Config.UPLOAD_FOLDER, filename)
-            file.save(file_path)
-            new_doc = Document(filename=filename, category=upload_form.category.data, user_id=current_user.id)
-            db.session.add(new_doc)
+            filename = secure_filename(f"{uuid.uuid4().hex}_{file.filename}")
+            file.save(os.path.join(Config.UPLOAD_FOLDER, filename))
+            
+            # 将文件信息保存到数据库
+            new_document = Document(filename=filename, category=upload_form.category.data, user_id=current_user.id)
+            db.session.add(new_document)
             db.session.commit()
+            
             flash('文件上传成功！')
             return redirect(url_for('routes.profile'))
         else:
@@ -80,6 +83,8 @@ def profile():
         current_user.phone = request.form['phone']
         db.session.commit()
         flash('个人信息更新成功！')
+
+    
     
     documents = Document.query.filter_by(user_id=current_user.id).all() if current_user.is_student() else []
     return render_template('profile.html', user=current_user, upload_form=upload_form, documents=documents)
