@@ -61,21 +61,73 @@ def login():
 def profile():
     upload_form = UploadForm()
     
-    if current_user.is_student() and upload_form.validate_on_submit():
-        file = upload_form.file.data
-        if file and allowed_file(file.filename):
-            filename = secure_filename(f"{uuid.uuid4().hex}_{file.filename}")
-            file.save(os.path.join(Config.UPLOAD_FOLDER, filename))
-            
-            # 将文件信息保存到数据库
-            new_document = Document(filename=filename, category=upload_form.category.data, user_id=current_user.id)
-            db.session.add(new_document)
-            db.session.commit()
-            
-            flash('文件上传成功！')
-            return redirect(url_for('routes.profile'))
-        else:
-            flash('不支持的文件类型。仅支持 PDF、DOC、DOCX。')
+    print("进入 /profile 路由，方法:", request.method)
+    
+    if request.method == 'POST':
+        print("收到 POST 请求，表单数据:", request.form, "文件:", request.files)
+        if current_user.is_student():
+            if upload_form.validate_on_submit():
+                print("表单验证通过")
+                file = upload_form.file.data
+                if file and allowed_file(file.filename):
+                    filename = secure_filename(file.filename)
+                    file_path = os.path.join(Config.UPLOAD_FOLDER, filename)
+                    
+                    print("检查文件路径:", file_path)
+                    if os.path.exists(file_path):
+                        flash('文件已存在，请更换文件名称后再上传。')
+                        return redirect(url_for('routes.profile'))
+                    
+                    file.save(file_path)
+                    new_doc = Document(filename=filename, category=upload_form.category.data, user_id=current_user.id)
+                    db.session.add(new_doc)
+                    db.session.commit()
+                    flash('文件上传成功！')
+                    return redirect(url_for('routes.profile'))
+                else:
+                    flash('不支持的文件类型。仅支持 PDF、DOC、DOCX。')
+                    return redirect(url_for('routes.profile'))
+            else:
+                print("表单验证失败，错误:", upload_form.errors)
+                flash('文件上传失败，请检查输入内容。')
+                return redirect(url_for('routes.profile'))
+    
+    if request.method == 'POST' and 'full_name' in request.form:
+        print("更新个人信息")
+        current_user.full_name = request.form['full_name']
+        current_user.email = request.form['email']
+        current_user.phone = request.form['phone']
+        db.session.commit()
+        flash('个人信息更新成功！')
+        return redirect(url_for('routes.profile'))
+    
+    documents = Document.query.filter_by(user_id=current_user.id).all() if current_user.is_student() else []
+    return render_template('profile.html', user=current_user, upload_form=upload_form, documents=documents)
+
+@bp.route('/delete/<filename>', methods=['GET'])
+@login_required
+def delete_file(filename):
+    if not current_user.is_student():
+        flash('只有学生可以删除自己的文件。')
+        return redirect(url_for('routes.profile'))
+    
+    doc = Document.query.filter_by(filename=filename, user_id=current_user.id).first()
+    if not doc:
+        flash('文件不存在或无权限删除。')
+        return redirect(url_for('routes.profile'))
+    
+    # 删除文件系统中的文件
+    file_path = os.path.join(Config.UPLOAD_FOLDER, filename)
+    if os.path.exists(file_path):
+        os.remove(file_path)
+    
+    # 删除数据库记录
+    db.session.delete(doc)
+    db.session.commit()
+    
+    flash('文件已成功删除！')
+    return redirect(url_for('routes.profile'))
+
     
     if request.method == 'POST' and 'full_name' in request.form:
         current_user.full_name = request.form['full_name']
@@ -83,11 +135,11 @@ def profile():
         current_user.phone = request.form['phone']
         db.session.commit()
         flash('个人信息更新成功！')
-
-    
+        return redirect(url_for('routes.profile'))
     
     documents = Document.query.filter_by(user_id=current_user.id).all() if current_user.is_student() else []
     return render_template('profile.html', user=current_user, upload_form=upload_form, documents=documents)
+
 
 @bp.route('/appointment', methods=['GET', 'POST'])
 @login_required
@@ -113,8 +165,26 @@ def appointment():
     appointments = Appointment.query.filter_by(student_id=current_user.id).all()
     return render_template('appointment.html', form=form, appointments=appointments)
 
+@bp.route('/download/<filename>')
+@login_required
+def download_file(filename):
+    if not current_user.is_student():
+        flash('只有学生可以查看自己的文件。')
+        return redirect(url_for('routes.profile'))
+    
+    # 确保文件属于当前用户
+    doc = Document.query.filter_by(filename=filename, user_id=current_user.id).first()
+    if not doc:
+        flash('文件不存在或无权限访问。')
+        return redirect(url_for('routes.profile'))
+    
+    return send_from_directory(Config.UPLOAD_FOLDER, filename, as_attachment=False)
+
+
 @bp.route('/logout')
 @login_required
 def logout():
     logout_user()
     return redirect(url_for('routes.login'))
+
+
