@@ -4,7 +4,7 @@ from flask_login import login_user, logout_user, login_required, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
 from app.models import User, Document, Appointment, db
-from app.forms import UploadForm, AppointmentForm
+from app.forms import UploadForm, AppointmentForm, RegisterForm, LoginForm
 from config import Config
 import os
 import uuid
@@ -20,41 +20,35 @@ def index():
 
 @bp.route('/register', methods=['GET', 'POST'])
 def register():
-    if request.method == 'POST':
-        username = request.form['username']
-        password = request.form['password']
-        role = request.form['role']
-        full_name = request.form['full_name']
-        email = request.form['email']
-        phone = request.form['phone']
-        
-        if User.query.filter_by(username=username).first():
-            flash('用户名已存在。')
-            return redirect(url_for('routes.register'))
-        
-        hashed_password = generate_password_hash(password, method='pbkdf2:sha256')
-        new_user = User(username=username, password=hashed_password, role=role, full_name=full_name, email=email, phone=phone)
+    form = RegisterForm()
+    if form.validate_on_submit():
+        hashed_password = generate_password_hash(form.password.data, method='pbkdf2:sha256')
+        new_user = User(username=form.username.data, email=form.email.data, password=hashed_password, role=form.role.data)
         db.session.add(new_user)
         db.session.commit()
         flash('注册成功！请登录。')
         return redirect(url_for('routes.login'))
-    
-    return render_template('register.html')
+    return render_template('register.html', form=form)
 
 @bp.route('/login', methods=['GET', 'POST'])
 def login():
-    if request.method == 'POST':
-        username = request.form['username']
-        password = request.form['password']
-        user = User.query.filter_by(username=username).first()
-        
-        if user and check_password_hash(user.password, password):
+    if current_user.is_authenticated:
+        return redirect(url_for('routes.home'))  # 如果已登录，跳转到首页
+
+    form = LoginForm()
+    if form.validate_on_submit():
+        user = User.query.filter_by(username=form.username.data).first()
+        if user and check_password_hash(user.password, form.password.data):
             login_user(user)
-            return redirect(url_for('routes.profile'))
+            return redirect(url_for('routes.home'))  # 登录成功跳转到首页
         else:
-            flash('无效的用户名或密码。')
-    
-    return render_template('login.html')
+            flash('用户名或密码错误。')  # 登录失败显示错误
+    return render_template('login.html', form=form)
+
+@bp.route('/home')
+@login_required
+def home():
+    return render_template('home.html', user=current_user)
 
 @bp.route('/profile', methods=['GET', 'POST'])
 @login_required
@@ -116,30 +110,15 @@ def delete_file(filename):
         flash('文件不存在或无权限删除。')
         return redirect(url_for('routes.profile'))
     
-    # 删除文件系统中的文件
     file_path = os.path.join(Config.UPLOAD_FOLDER, filename)
     if os.path.exists(file_path):
         os.remove(file_path)
     
-    # 删除数据库记录
     db.session.delete(doc)
     db.session.commit()
     
     flash('文件已成功删除！')
     return redirect(url_for('routes.profile'))
-
-    
-    if request.method == 'POST' and 'full_name' in request.form:
-        current_user.full_name = request.form['full_name']
-        current_user.email = request.form['email']
-        current_user.phone = request.form['phone']
-        db.session.commit()
-        flash('个人信息更新成功！')
-        return redirect(url_for('routes.profile'))
-    
-    documents = Document.query.filter_by(user_id=current_user.id).all() if current_user.is_student() else []
-    return render_template('profile.html', user=current_user, upload_form=upload_form, documents=documents)
-
 
 @bp.route('/appointment', methods=['GET', 'POST'])
 @login_required
@@ -172,7 +151,6 @@ def download_file(filename):
         flash('只有学生可以查看自己的文件。')
         return redirect(url_for('routes.profile'))
     
-    # 确保文件属于当前用户
     doc = Document.query.filter_by(filename=filename, user_id=current_user.id).first()
     if not doc:
         flash('文件不存在或无权限访问。')
@@ -180,11 +158,8 @@ def download_file(filename):
     
     return send_from_directory(Config.UPLOAD_FOLDER, filename, as_attachment=False)
 
-
 @bp.route('/logout')
 @login_required
 def logout():
     logout_user()
     return redirect(url_for('routes.login'))
-
-

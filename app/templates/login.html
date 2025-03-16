@@ -10,18 +10,19 @@
         {% with messages = get_flashed_messages() %}
             {% if messages %}
                 {% for message in messages %}
-                    <div class="flash-message">{{ message }}</div>
+                    <p class="flash-message">{{ message }}</p>
                 {% endfor %}
             {% endif %}
         {% endwith %}
-        <form method="POST">
+        <form method="POST" action="{{ url_for('routes.login') }}">
+            {{ form.hidden_tag() }}
             <label>用户名</label>
-            <input type="text" name="username" required>
+            {{ form.username }}
             <label>密码</label>
-            <input type="password" name="password" required>
-            <button type="submit">登录</button>
+            {{ form.password }}
+            {{ form.submit }}
         </form>
-        <a href="{{ url_for('routes.register') }}">还没有账号？注册</a>
+        <a href="{{ url_for('routes.register') }}">还没有账号？去注册</a>
     </div>
 </body>
 </html>

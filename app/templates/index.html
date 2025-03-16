@@ -1,9 +1,18 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>首页</title>
+    <title>阿伯丁留学服务平台</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
-    <h1>欢迎来到首页</h1>
+    <div class="container">
+        <h1>欢迎来到阿伯丁留学服务平台</h1>
+        <p>
+            <a href="{{ url_for('routes.register') }}">还没有账号，现在注册</a>
+        </p>
+        <p>
+            <a href="{{ url_for('routes.login') }}">已有账号，直接登录</a>
+        </p>
+    </div>
 </body>
 </html>

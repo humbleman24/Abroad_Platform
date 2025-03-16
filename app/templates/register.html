@@ -7,32 +7,21 @@
 <body>
     <div class="container">
         <h1>注册</h1>
-        {% with messages = get_flashed_messages() %}
-            {% if messages %}
-                {% for message in messages %}
-                    <div class="flash-message">{{ message }}</div>
-                {% endfor %}
-            {% endif %}
-        {% endwith %}
-        <form method="POST">
+        <form method="POST" action="{{ url_for('routes.register') }}">
+            {{ form.hidden_tag() }}
             <label>用户名</label>
-            <input type="text" name="username" required>
-            <label>密码</label>
-            <input type="password" name="password" required>
-            <label>角色</label>
-            <select name="role" required>
-                <option value="student">学生</option>
-                <option value="teacher">教师</option>
-            </select>
-            <label>全名</label>
-            <input type="text" name="full_name">
+            {{ form.username }}
             <label>邮箱</label>
-            <input type="email" name="email">
-            <label>电话</label>
-            <input type="text" name="phone">
-            <button type="submit">注册</button>
+            {{ form.email }}
+            <label>密码</label>
+            {{ form.password }}
+            <label>确认密码</label>
+            {{ form.password2 }}
+            <label>身份</label>
+            {{ form.role }}
+            {{ form.submit }}
         </form>
-        <a href="{{ url_for('routes.login') }}">已有账号？登录</a>
+        <a href="{{ url_for('routes.login') }}">已有账号？去登录</a>
     </div>
 </body>
 </html>

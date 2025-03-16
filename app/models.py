@@ -12,6 +12,7 @@ class User(UserMixin, db.Model):
     password = db.Column(db.String(128), nullable=False)
     role = db.Column(db.String(20), nullable=False)  # 'student' 或 'teacher'
     full_name = db.Column(db.String(100))
+    role = db.Column(db.String(20), nullable=False)
     email = db.Column(db.String(120), unique=True)
     phone = db.Column(db.String(20))
     
@@ -42,3 +43,4 @@ class Appointment(db.Model):
     teacher_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     time_slot = db.Column(db.String(50), nullable=False)  # e.g., '2025-03-15 10:00'
     status = db.Column(db.String(20), default='pending')  # 'pending', 'accepted', 'rejected'
+

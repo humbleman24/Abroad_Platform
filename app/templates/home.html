@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>首页 - 阿伯丁留学服务平台</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>欢迎回来，{{ user.username }}</h1>
+        <p>您的身份：{{ user.role }}</p>
+        <h2>服务通道</h2>
+        <ul>
+            <li><a href="{{ url_for('routes.profile') }}">个人资料管理</a></li>
+            {% if user.is_student() %}
+                <li><a href="{{ url_for('routes.appointment') }}">预约老师</a></li>
+            {% endif %}
+            {% if user.is_teacher() %}
+                <li><a href="{{ url_for('routes.manage_appointments') }}">管理预约</a></li>
+            {% endif %}
+            <li><a href="{{ url_for('routes.logout') }}">退出登录</a></li>
+        </ul>
+    </div>
+</body>
+</html>
