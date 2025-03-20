@@ -6,10 +6,11 @@
 </head>
 <body>
     <div class="container">
+        <a href="{{ back_url }}" class="back-btn">返回</a>
+        <a href="{{ url_for('routes.home') }}" class="home-btn">首页</a>
         <h1>欢迎，{{ user.username }}</h1>
         <p>{{ user.role }}</p>
         
-        <!-- 消息提示模态框 -->
         {% with messages = get_flashed_messages() %}
             {% if messages %}
                 <div class="modal" id="flashModal" style="display: block;">
@@ -35,64 +36,17 @@
         </form>
         
         {% if user.is_student() %}
-        <h2>上传文件</h2>
-        <form method="POST" action="{{ url_for('routes.profile') }}" enctype="multipart/form-data">
-            {{ upload_form.hidden_tag() }}
-            <label>文件</label>
-            {{ upload_form.file }}
-            <label>类别</label>
-            {{ upload_form.category }}
-            {{ upload_form.submit }}
-        </form>
-        
-        <h3>已上传文件</h3>
-        <ul>
-            {% for doc in documents %}
-                <li>
-                    <a href="{{ url_for('routes.download_file', filename=doc.filename) }}" target="_blank">
-                        {{ doc.category }}: {{ doc.filename }}
-                    </a>
-                    <button class="delete-btn" onclick="showDeleteModal('{{ doc.filename }}')">删除</button>
-                </li>
-            {% endfor %}
-        </ul>
+        <a href="{{ url_for('routes.upload') }}" class="btn">上传文件</a>
+        <a href="{{ url_for('routes.documents') }}" class="btn">查看已上传文件</a>
         <a href="{{ url_for('routes.appointment') }}">预约老师</a>
         {% endif %}
         
         <a href="{{ url_for('routes.logout') }}">退出登录</a>
     </div>
 
-    <!-- 删除确认模态框 -->
-    <div class="modal" id="deleteModal" style="display: none;">
-        <div class="modal-content">
-            <p id="deleteMessage">是否确认删除该文件？</p>
-            <button onclick="confirmDelete()">是</button>
-            <button onclick="closeDeleteModal()">否</button>
-        </div>
-    </div>
-
     <script>
-        let fileToDelete = null;
-
         function closeModal() {
             document.getElementById('flashModal').style.display = 'none';
-        }
-
-        function showDeleteModal(filename) {
-            fileToDelete = filename;
-            document.getElementById('deleteMessage').textContent = `是否确认删除文件：${filename}？`;
-            document.getElementById('deleteModal').style.display = 'block';
-        }
-
-        function closeDeleteModal() {
-            document.getElementById('deleteModal').style.display = 'none';
-            fileToDelete = null;
-        }
-
-        function confirmDelete() {
-            if (fileToDelete) {
-                window.location.href = `/delete/${fileToDelete}`;
-            }
         }
     </script>
 </body>

@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>预约老师</title>
+    <title>上传文件</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
     <div class="container">
-        <a href="{{ back_url }}" class="back-btn">返回</a>
+ prophecies        <a href="{{ back_url }}" class="back-btn">返回</a>
         <a href="{{ url_for('routes.home') }}" class="home-btn">首页</a>
-        <h1>预约老师</h1>
+        <h1>上传文件</h1>
         
         {% with messages = get_flashed_messages() %}
             {% if messages %}
@@ -23,23 +23,16 @@
             {% endif %}
         {% endwith %}
         
-        <form method="POST" action="{{ url_for('routes.appointment') }}">
+        <form method="POST" action="{{ url_for('routes.upload') }}" enctype="multipart/form-data">
             {{ form.hidden_tag() }}
-            <label>选择老师</label>
-            {{ form.teacher }}
-            <label>选择时间</label>
-            {{ form.time_slot }}
+            <label>文件</label>
+            {{ form.file }}
+            <label>类别</label>
+            {{ form.category }}
             {{ form.submit }}
         </form>
         
-        <h2>我的预约</h2>
-        <ul>
-            {% for appt in appointments %}
-                <li>{{ appt.teacher.username }} - {{ appt.time_slot }}</li>
-            {% else %}
-                <li>暂无预约</li>
-            {% endfor %}
-        </ul>
+        <a href="{{ url_for('routes.documents') }}" class="btn">查看已上传文件</a>
     </div>
 
     <script>

@@ -4,8 +4,12 @@ from wtforms import StringField, SelectField, SubmitField, FileField, PasswordFi
 from wtforms.validators import DataRequired, EqualTo, Email
 
 class UploadForm(FlaskForm):
-    file = FileField('上传文件', validators=[DataRequired()])
-    category = SelectField('文件类别', choices=[('resume', '简历'), ('ps', '个人陈述')], validators=[DataRequired()])
+    file = FileField('文件', validators=[DataRequired()])
+    category = SelectField('类别', choices=[
+        ('简历', '简历'),
+        ('申请信', '申请信'),
+        ('推荐信', '推荐信')  # 可根据需要扩展
+    ], validators=[DataRequired()])
     submit = SubmitField('上传')
 
 class AppointmentForm(FlaskForm):

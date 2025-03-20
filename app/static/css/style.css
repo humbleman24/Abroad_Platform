@@ -19,6 +19,8 @@ body {
     width: 100%;
     max-width: 400px;
     text-align: center;
+    position: relative; /* 添加 relative 定位以支持绝对定位的按钮 */
+    padding-top: 60px; /* 增加顶部间距，避免内容被按钮遮挡 */
 }
 
 h1 {
@@ -169,6 +171,7 @@ li {
 .modal-content button:hover {
     background-color: #005bb5;
 }
+
 .delete-btn {
     margin-left: 10px;
     padding: 5px 10px;
@@ -183,4 +186,57 @@ li {
 
 .delete-btn:hover {
     background-color: #d32f2f;
+}
+
+/* 返回按钮 - 左上角 */
+.back-btn {
+    position: absolute;
+    left: 20px;
+    top: 20px;
+    padding: 8px 16px;
+    background-color: #e5e5ea;
+    color: #1d1d1f;
+    text-decoration: none;
+    border-radius: 10px;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+}
+
+.back-btn:hover {
+    background-color: #d2d2d7;
+}
+
+/* 首页按钮 - 右上角 */
+.home-btn {
+    position: absolute;
+    right: 20px;
+    top: 20px;
+    padding: 8px 16px;
+    background-color: #007aff;
+    color: #ffffff;
+    text-decoration: none;
+    border-radius: 10px;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+}
+
+.home-btn:hover {
+    background-color: #005bb5;
+}
+
+/* 其他按钮样式 */
+.btn {
+    display: inline-block;
+    margin: 10px 0;
+    padding: 12px 20px;
+    background-color: #007aff;
+    color: #ffffff;
+    text-decoration: none;
+    border-radius: 10px;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+}
+
+.btn:hover {
+    background-color: #005bb5;
 }
