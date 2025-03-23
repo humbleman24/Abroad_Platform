@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>登录</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>登录</h1>
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="flash-message">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        <form method="POST">
+            {{ form.csrf_token }}
+            <label>用户名</label>
+            <input type="text" name="username" required>
+            <label>密码</label>
+            <input type="password" name="password" required>
+            <button type="submit">登录</button>
+        </form>
+        <a href="{{ url_for('auth.register') }}">还没有账号？注册</a>
+    </div>
+</body>
+</html>

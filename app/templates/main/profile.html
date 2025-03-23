@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>个人资料</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='uploads/css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>欢迎，{{ user.username }}</h1>
+        <p>{{ user.role }}</p>
+        <!-- {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="flash-message">{{ message }}</div>
+                {% endfor %}
+            {% endif %} -->
+        <!-- {% endwith %} -->
+        <!-- 添加一个专门的消息显示区域 -->
+        <div id="message-container">
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="flash-message">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+        </div>
+        
+        <!-- 个人信息表单 -->
+        <h2>个人信息</h2>
+        <form method="POST">
+            <label>全名</label>
+            <input type="text" name="full_name" value="{{ user.full_name or '' }}">
+            <label>邮箱</label>
+            <input type="email" name="email" value="{{ user.email or '' }}">
+            <label>电话</label>
+            <input type="text" name="phone" value="{{ user.phone or '' }}">
+            <button type="submit">更新资料</button>
+        </form>
+        
+
+        <!-- 学生特有功能区域 -->
+        {% if user.is_student() %}
+        <h2>上传文件</h2>
+        <form method="POST" enctype="multipart/form-data">
+            {{ upload_form.hidden_tag() }}
+            <label>文件</label>
+            {{ upload_form.file }}
+            <label>类别</label>
+            {{ upload_form.category }}
+            {{ upload_form.submit }}
+        </form>
+        
+        <h3>已上传文件</h3>
+        <ul>
+            {% for doc in documents %}
+                <li>
+                    {{ doc.category }}: {{ doc.filename }}
+                    <div class="button-group"></div>
+                        <a href="{{ url_for('main.delete_document', document_id=doc.id) }}" class="delete-btn" onclick="return confirm('确定要删除这个文件吗？');">删除</a>
+                        <a href="{{ url_for('main.view_document', document_id=doc.id) }}" class="view-btn">查看</a>
+                    </div>
+                       
+                </li>
+                    {% endfor %}
+
+        </ul>
+
+        <!-- 学生预约功能链接 -->
+        <a href="{{ url_for('student.appointment') }}">预约老师</a>
+        {% endif %}
+        
+        
+        <!-- 教师特有功能区域 [新增] -->
+        {% if user.is_teacher() %}
+        <h2>教师功能</h2>
+        <a href="{{ url_for('teacher.student_list') }}">管理学生</a>
+        {% endif %}
+
+        
+        <a href="{{ url_for('auth.logout') }}">退出登录</a>
+    </div>
+
+
+     <!-- 自动隐藏消息的脚本 -->
+    <script>
+        // 自动隐藏消息
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(function() {
+                const messageContainer = document.getElementById('message-container');
+                if (messageContainer) {
+                    messageContainer.style.display = 'none';
+                }
+            }, 3000); // 3秒后消失
+        });
+    </script>
+ 
+
+</body>
+</html>

@@ -1,0 +1,122 @@
+<!-- templates/teacher/profile.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>教师个人资料</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .profile-section {
+            margin-bottom: 30px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        input[type="text"],
+        input[type="email"],
+        input[type="tel"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        .submit-button {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #4285f4;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .submit-button:hover {
+            background-color: #3367d6;
+        }
+        .nav-links {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 30px;
+        }
+        .nav-link {
+            display: inline-block;
+            padding: 8px 16px;
+            color: #4285f4;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        .nav-link:hover {
+            background-color: #f1f3f4;
+        }
+        .flash-message {
+            padding: 10px;
+            background-color: #d4edda;
+            color: #155724;
+            border-radius: 5px;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>个人资料</h1>
+        
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="flash-message">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        
+        <div class="profile-section">
+            <form method="POST">
+                {{ form.csrf_token if form else "" }}
+                
+                <div class="form-group">
+                    <label for="full_name">姓名</label>
+                    <input type="text" id="full_name" name="full_name" value="{{ current_user.full_name or '' }}">
+                </div>
+                
+                <div class="form-group">
+                    <label for="email">邮箱</label>
+                    <input type="email" id="email" name="email" value="{{ current_user.email or '' }}">
+                </div>
+                
+                <div class="form-group">
+                    <label for="phone">电话</label>
+                    <input type="tel" id="phone" name="phone" value="{{ current_user.phone or '' }}">
+                </div>
+                
+                <button type="submit" class="submit-button">更新资料</button>
+            </form>
+        </div>
+        
+        <div class="nav-links">
+            <a href="{{ url_for('teacher.dashboard') }}" class="nav-link">返回主页</a>
+            <a href="{{ url_for('teacher.student_list') }}" class="nav-link">管理学生</a>
+            <a href="{{ url_for('auth.logout') }}" class="nav-link">退出登录</a>
+        </div>
+    </div>
+</body>
+</html>
