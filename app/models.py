@@ -15,7 +15,8 @@ class User(UserMixin, db.Model):
     role = db.Column(db.String(20), nullable=False)
     email = db.Column(db.String(120), unique=True)
     phone = db.Column(db.String(20))
-    
+    major = db.Column(db.String(100))  
+    grade = db.Column(db.String(20))   
     # 关系：一个用户可以有多个文档和预约
     documents = db.relationship('Document', backref='user', lazy=True)
     appointments = db.relationship('Appointment', backref='student', foreign_keys='Appointment.student_id', lazy=True)

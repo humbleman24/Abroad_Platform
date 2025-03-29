@@ -62,11 +62,14 @@ def profile():
         current_user.full_name = request.form['full_name']
         current_user.email = request.form['email']
         current_user.phone = request.form['phone']
+        current_user.major = request.form['major']  # 新增专业
+        current_user.grade = request.form['grade']  # 新增年级
         db.session.commit()
         flash('个人信息更新成功！')
         return redirect(url_for('routes.profile'))
     
     return render_template('profile.html', user=current_user, back_url=back_url)
+
 
 @bp.route('/upload', methods=['GET', 'POST'])
 @login_required
@@ -181,3 +184,15 @@ def download_file(filename):
 def logout():
     logout_user()
     return redirect(url_for('routes.login'))
+
+@bp.route('/university_info')
+def university_info():
+    return render_template('university_info.html')
+
+@bp.route('/seminars')
+def seminars():
+    return render_template('seminars.html')
+
+@bp.route('/interactive_map')
+def interactive_map():
+    return render_template('interactive_map.html')

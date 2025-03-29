@@ -8,7 +8,8 @@ class UploadForm(FlaskForm):
     category = SelectField('类别', choices=[
         ('简历', '简历'),
         ('申请信', '申请信'),
-        ('推荐信', '推荐信')  # 可根据需要扩展
+        ('推荐信', '推荐信') ,
+        ('GPA排名和成绩单证明', 'GPA排名和成绩单证明') 
     ], validators=[DataRequired()])
     submit = SubmitField('上传')
 

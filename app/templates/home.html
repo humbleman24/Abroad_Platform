@@ -10,13 +10,26 @@
         <a href="{{ url_for('routes.home') }}" class="home-btn">首页</a>
         <h1>欢迎回来，{{ user.username }}</h1>
         <p>您的身份：{{ user.role }}</p>
-        <h2>服务通道</h2>
+        <h2>综合服务模块</h2>
+        <div class="service-options">
+            <div class="service-item">
+                <h3>海外高校信息</h3>
+                <p>查看全球高校的详细信息，包括排名、课程和申请要求。</p>
+                <a href="{{ url_for('routes.university_info') }}" class="btn">查看详情</a>
+            </div>
+            <div class="service-item">
+                <h3>留学讲座</h3>
+                <p>参与最新的留学讲座，获取专业的留学指导。</p>
+                <a href="{{ url_for('routes.seminars') }}" class="btn">查看讲座</a>
+            </div>
+            <div class="service-item">
+                <h3>地图互动功能展示</h3>
+                <p>通过地图互动功能，探索海外高校的地理位置。</p>
+                <a href="{{ url_for('routes.interactive_map') }}" class="btn">查看地图</a>
+            </div>
+        </div>
         <ul>
             <li><a href="{{ url_for('routes.profile') }}">个人资料管理</a></li>
-            <li><a href="{{ url_for('routes.appointment') }}">预约老师</a></li>
-            {% if user.is_teacher() %}
-                <li><a href="{{ url_for('routes.manage_appointments') }}">管理预约</a></li>
-            {% endif %}
             <li><a href="{{ url_for('routes.logout') }}">退出登录</a></li>
         </ul>
     </div>

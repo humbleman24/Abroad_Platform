@@ -18,21 +18,25 @@
                         {% for message in messages %}
                             <p>{{ message }}</p>
                         {% endfor %}
-                        <button onclick="closeModal()">确定</button>
+                        <button onclick="closeModal('flashModal')">确定</button>
                     </div>
                 </div>
             {% endif %}
         {% endwith %}
         
         <h2>个人信息</h2>
-        <form method="POST" action="{{ url_for('routes.profile') }}">
+        <form id="profileForm" method="POST" action="{{ url_for('routes.profile') }}">
             <label>全名</label>
             <input type="text" name="full_name" value="{{ user.full_name or '' }}">
             <label>邮箱</label>
             <input type="email" name="email" value="{{ user.email or '' }}">
             <label>电话</label>
             <input type="text" name="phone" value="{{ user.phone or '' }}">
-            <button type="submit">更新资料</button>
+            <label>专业</label>
+            <input type="text" name="major" value="{{ user.major or '' }}">
+            <label>年级</label>
+            <input type="text" name="grade" value="{{ user.grade or '' }}">
+            <button type="button" onclick="showConfirmModal()">更新资料</button>
         </form>
         
         {% if user.is_student() %}
@@ -44,9 +48,26 @@
         <a href="{{ url_for('routes.logout') }}">退出登录</a>
     </div>
 
+    <!-- 确认更新模态框 -->
+    <div class="modal" id="confirmModal" style="display: none;">
+        <div class="modal-content">
+            <p>是否确认更新个人信息？</p>
+            <button onclick="submitForm()">是</button>
+            <button onclick="closeModal('confirmModal')">否</button>
+        </div>
+    </div>
+
     <script>
-        function closeModal() {
-            document.getElementById('flashModal').style.display = 'none';
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        function showConfirmModal() {
+            document.getElementById('confirmModal').style.display = 'block';
+        }
+
+        function submitForm() {
+            document.getElementById('profileForm').submit();
         }
     </script>
 </body>
