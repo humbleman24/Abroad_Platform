@@ -8,7 +8,16 @@
     <div class="container">
         <a href="{{ url_for('routes.home') }}" class="back-btn">返回首页</a>
         <h1>海外高校信息</h1>
-        <p>这里将展示全球高校的详细信息。</p>
+        <div class="university-list">
+            {% for university in universities %}
+            <div class="university-item">
+                <h2>{{ university.name }}</h2>
+                <p><strong>位置：</strong>{{ university.location }}</p>
+                <p><strong>排名：</strong>#{{ university.ranking }}</p>
+                <p>{{ university.description }}</p>
+            </div>
+            {% endfor %}
+        </div>
     </div>
 </body>
 </html>

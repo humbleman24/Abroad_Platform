@@ -27,9 +27,13 @@
                 <p>通过地图互动功能，探索海外高校的地理位置。</p>
                 <a href="{{ url_for('routes.interactive_map') }}" class="btn">查看地图</a>
             </div>
+            <div class="service-item">
+                <h3>个人资料管理</h3>
+                <p>管理您的个人信息，包括更新联系方式和查看账户详情。</p>
+                <a href="{{ url_for('routes.profile') }}" class="btn">进入管理</a>
+            </div>
         </div>
         <ul>
-            <li><a href="{{ url_for('routes.profile') }}">个人资料管理</a></li>
             <li><a href="{{ url_for('routes.logout') }}">退出登录</a></li>
         </ul>
     </div>

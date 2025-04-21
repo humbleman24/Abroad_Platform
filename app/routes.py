@@ -187,7 +187,69 @@ def logout():
 
 @bp.route('/university_info')
 def university_info():
-    return render_template('university_info.html')
+    universities = [
+        {
+            'name': '麻省理工学院（MIT）',
+            'location': '美国',
+            'ranking': 1,
+            'description': '麻省理工学院以其在科学、工程和技术领域的卓越研究和教育闻名全球。',
+        },
+        {
+            'name': '帝国理工学院（Imperial College London）',
+            'location': '英国',
+            'ranking': 2,
+            'description': '帝国理工学院是世界领先的科学、工程、医学和商业研究型大学。',
+        },
+        {
+            'name': '牛津大学（University of Oxford）',
+            'location': '英国',
+            'ranking': 3,
+            'description': '牛津大学是英语世界中最古老的大学，以其悠久的历史和学术成就著称。',
+        },
+        {
+            'name': '哈佛大学（Harvard University）',
+            'location': '美国',
+            'ranking': 4,
+            'description': '哈佛大学是世界顶尖的私立研究型大学，以其卓越的学术和研究闻名。',
+        },
+        {
+            'name': '剑桥大学（University of Cambridge）',
+            'location': '英国',
+            'ranking': 5,
+            'description': '剑桥大学是世界领先的研究型大学，以其卓越的教育和研究闻名。',
+        },
+        {
+            'name': '斯坦福大学（Stanford University）',
+            'location': '美国',
+            'ranking': 6,
+            'description': '斯坦福大学以其创新精神和在技术领域的卓越研究而闻名。',
+        },
+        {
+            'name': '苏黎世联邦理工学院（ETH Zurich）',
+            'location': '瑞士',
+            'ranking': 7,
+            'description': '苏黎世联邦理工学院是欧洲顶尖的科学和技术大学，以其高质量的研究和教育闻名。',
+        },
+        {
+            'name': '新加坡国立大学（NUS）',
+            'location': '新加坡',
+            'ranking': 8,
+            'description': '新加坡国立大学是亚洲领先的大学，以其多学科研究和全球影响力著称。',
+        },
+        {
+            'name': '伦敦大学学院（UCL）',
+            'location': '英国',
+            'ranking': 9,
+            'description': '伦敦大学学院是世界领先的多学科大学，以其创新研究和教学闻名。',
+        },
+        {
+            'name': '加州理工学院（Caltech）',
+            'location': '美国',
+            'ranking': 10,
+            'description': '加州理工学院以其在科学和工程领域的尖端研究和小规模教学而闻名。',
+        },
+    ]
+    return render_template('university_info.html', universities=universities)
 
 @bp.route('/seminars')
 def seminars():
